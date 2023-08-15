@@ -17,7 +17,6 @@ const MediaSchema = new mongoose.Schema({
     trim: true,
   },
 
-  // Add other properties here...
 }, { timestamps: true });
 
 const  Media= mongoose.model('Media', MediaSchema);
