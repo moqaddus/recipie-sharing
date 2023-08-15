@@ -38,7 +38,11 @@ const RecipeSchema = new mongoose.Schema({
     ref: 'User', // Reference to the User schema
     required: true,
   },
-  // Add other properties here...
+  category: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Category', // Reference to the Category schema
+    required: true,
+  },
 }, { timestamps: true });
 
 const Recipe = mongoose.model('Recipe', RecipeSchema);

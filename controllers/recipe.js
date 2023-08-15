@@ -1,4 +1,5 @@
 const Recipe=require('../models/Recipe')
+const Category=require('../models/Category')
 const {JWT_SECRET}=require('../config/index')
 const jwt=require('jsonwebtoken')
 const mongoose=require('mongoose');
@@ -6,8 +7,45 @@ const mongoose=require('mongoose');
 
 const getAll=async(req,res,next)=>{
   try {
-    const Recipes=await Recipe.find({});
-    res.status(200).json({Recipes});
+    const {cuisine,ingredients,category}=req.query
+  const queryObject={}
+
+  if(category)
+  {
+    const foundCategory=await Category.find({name:category})
+    if(foundCategory)
+    {
+      queryObject.category=foundCategory[0]._id
+    }
+
+  }
+
+  if(cuisine)
+  {
+    queryObject.cuisine=cuisine
+  }
+
+  console.log(queryObject)
+  let Recipes=await Recipe.find(queryObject);
+
+  if(ingredients)
+  {
+      const ingredientObject = JSON.parse(ingredients); // Parse the JSON directly as an object
+  
+      if (ingredientObject.name) {
+        const ingredientName = ingredientObject.name;
+  
+        Recipes = Recipes.filter(recipe =>
+          recipe.ingredients.some(ingredient => ingredient.name === ingredientName)
+        );
+      }
+    
+   // queryObject.ingredients=ingredients
+  }
+
+   // console.log(queryObject)
+   // const Recipes=await Recipe.find(queryObject);
+    res.status(200).json({Recipes});////
     
   } catch (error) {
     console.log(error)
@@ -38,8 +76,14 @@ const createRecipe = async (req, res) => {
     }
     */
 
-    const { name, ingredients, description, cuisine } = req.body;
+    const { name, ingredients, description, cuisine, category } = req.body;
     const createdBy=req.user.userId
+    const foundCategory=await Category.find({name:category})
+    if(!foundCategory)
+    {
+      return res.status(400).json({message:'This category is not present'})
+    }
+
     console.log(req.user.userId);
     const newRecipe = await Recipe.create({
       name,
@@ -47,10 +91,12 @@ const createRecipe = async (req, res) => {
       description,
       cuisine,
       createdBy,
+      category:foundCategory[0]._id
     });
 
     res.status(201).json({ recipe: newRecipe });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'An error occurred while creating the recipe' });
   }
 }

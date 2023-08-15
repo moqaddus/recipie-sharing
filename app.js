@@ -15,6 +15,8 @@ app.use(express.json());
 
 app.use(cookieParser());
 
+
+app.use('/upload',express.static('upload'))
 app.use('/api/v1',mainRouter)
 app.use('/api/v1/recipe',authMiddleware,recipeRouter)
 
