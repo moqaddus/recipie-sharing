@@ -29,14 +29,6 @@ const register=async(req,res,next)=>{
     
   }
   
-//making a temp user and with name and email same as above user 
-  //but password including addittional bit string
-  //const salt=await bcrypt.genSalt(10);//randombytes
-  //const hashedPassword=await bcrypt.hash(password,salt)
-  //const tempUser={name,email,password:hashedPassword}
-  //const user=await User.create({...req.body})
-  //const token=user.createJWT()
-  //res.status(StatusCodes.CREATED).json({user:{name:user.name},token})
 
 }
 const login=async(req,res,next)=>{
@@ -86,15 +78,7 @@ const login=async(req,res,next)=>{
 }
 
 const logout=async (req,res,next)=>{
-  /*
-  try {
-    
-    res.clearCookie('access_token');
-    res.json({ message: 'Logged out successfully' });
-  } catch (error) {
-    res.json({ message: 'Unsuccessful' });
-  }
-*/
+ 
   const token = req.cookies.access_token;
 
   if (!token) {
@@ -102,12 +86,7 @@ const logout=async (req,res,next)=>{
   }
 
   try {
-    /*
-    const payload=jwt.verify(token,process.env.JWT_SECRET)
-    req.user={userId:payload.userId,name:payload.name}
-    res.clearCookie('access_token');
-    return res.status(200).json({ name:req.user.name});
-    */
+    
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
